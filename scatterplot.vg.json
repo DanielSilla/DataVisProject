@@ -1,0 +1,153 @@
+{
+    "$schema": "https://vega.github.io/schema/vega/v5.json",
+    "background": "white",
+    "padding": 5,
+    "width": 800,
+    "height": 800,
+    "title": {"text": "Happiness vs GDP", "frame": "group"},
+    "style": "cell",
+    "data": [
+      {
+        "name": "source_0",
+        "url": "https://raw.githubusercontent.com/DanielSilla/DataVisProject/main/world-happiness-report-2021.csv",
+        "format": {"type": "csv", "delimiter": ","},
+        "transform": [
+          {
+            "type": "filter",
+            "expr": "isValid(datum[\"Ladder_score\"]) && isFinite(+datum[\"Ladder_score\"]) && isValid(datum[\"Logged_GDP_per_capita\"]) && isFinite(+datum[\"Logged_GDP_per_capita\"])"
+          }
+        ]
+      }
+    ],
+    "marks": [
+      {
+        "name": "marks",
+        "type": "symbol",
+        "style": ["circle"],
+        "from": {"data": "source_0"},
+        "encode": {
+          "update": {
+            "opacity": {"value": 0.7},
+            "fill": {"scale": "color", "field": "Regional_indicator"},
+            "ariaRoleDescription": {"value": "circle"},
+            "description": {
+              "signal": "\"Happiness: \" + (format(datum[\"Ladder_score\"], \"\")) + \"; GDp per capita (logarithmic): \" + (format(datum[\"Logged_GDP_per_capita\"], \"\")) + \"; Regional_indicator: \" + (isValid(datum[\"Regional_indicator\"]) ? datum[\"Regional_indicator\"] : \"\"+datum[\"Regional_indicator\"])"
+            },
+            "x": [
+              {
+                "test": "!isValid(datum[\"Ladder_score\"]) || !isFinite(+datum[\"Ladder_score\"])",
+                "value": 0
+              },
+              {"scale": "x", "field": "Ladder_score"}
+            ],
+            "y": [
+              {
+                "test": "!isValid(datum[\"Logged_GDP_per_capita\"]) || !isFinite(+datum[\"Logged_GDP_per_capita\"])",
+                "field": {"group": "height"}
+              },
+              {"scale": "y", "field": "Logged_GDP_per_capita"}
+            ],
+            "shape": {"value": "circle"}
+          }
+        }
+      }
+    ],
+    "scales": [
+      {
+        "name": "x",
+        "type": "linear",
+        "domain": [2, 8],
+        "range": [0, {"signal": "width"}],
+        "zero": false
+      },
+      {
+        "name": "y",
+        "type": "linear",
+        "domain": [6, 12],
+        "range": [{"signal": "height"}, 0],
+        "zero": false
+      },
+      {
+        "name": "color",
+        "type": "ordinal",
+        "domain": {
+          "data": "source_0",
+          "field": "Regional_indicator",
+          "sort": true
+        },
+        "range": "category"
+      }
+    ],
+    "axes": [
+      {
+        "scale": "x",
+        "orient": "bottom",
+        "gridScale": "y",
+        "grid": true,
+        "tickCount": {"signal": "ceil(width/40)"},
+        "domain": false,
+        "labels": false,
+        "aria": false,
+        "maxExtent": 0,
+        "minExtent": 0,
+        "ticks": false,
+        "zindex": 0
+      },
+      {
+        "scale": "y",
+        "orient": "left",
+        "gridScale": "x",
+        "grid": true,
+        "tickCount": {"signal": "ceil(height/40)"},
+        "domain": false,
+        "labels": false,
+        "aria": false,
+        "maxExtent": 0,
+        "minExtent": 0,
+        "ticks": false,
+        "zindex": 0
+      },
+      {
+        "scale": "x",
+        "orient": "bottom",
+        "grid": false,
+        "title": "Happiness",
+        "labelFlush": true,
+        "labelOverlap": true,
+        "tickCount": {"signal": "ceil(width/40)"},
+        "zindex": 0
+      },
+      {
+        "scale": "y",
+        "orient": "left",
+        "grid": false,
+        "title": "GDp per capita (logarithmic)",
+        "labelOverlap": true,
+        "tickCount": {"signal": "ceil(height/40)"},
+        "zindex": 0
+      }
+    ],
+    "legends": [
+      {
+        "fill": "color",
+        "symbolType": "circle",
+        "title": "Regional_indicator",
+        "encode": {"symbols": {"update": {"opacity": {"value": 0.7}}}}
+      }
+    ],
+    "encoding":{
+    "tooltip":[
+        {"field": "Country_name", "type": "nominal", "format": ","},
+        {"field": "Ladder_score", "type": "quantitative", "format": ","},
+        {"field": "Logged_GDP_per_capita", "type": "quantitative", "format": ","}
+    ],
+    "encoding":{
+      "tooltip":[
+          {"field": "Country_name", "type": "nominal", "format": ","},
+          {"field": "Ladder_score", "type": "quantitative", "format": ","},
+          {"field": "Logged_GDP_per_capita", "type": "quantitative", "format": ","}
+      ]
+    }
+  },
+    "config": {}
+  }
